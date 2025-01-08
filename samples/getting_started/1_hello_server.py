@@ -10,11 +10,10 @@ import tableauserverclient as TSC
 
 def main():
     # This is the domain for Tableau's Developer Program
-    server_url = "https://10ax.online.tableau.com"
+    server_url = "https://prod-useast-a.online.tableau.com/"
     server = TSC.Server(server_url)
     print(f"Connected to {server.server_info.baseurl}")
     print(f"Server information: {server.server_info}")
-    print("Sign up for a test site at https://www.tableau.com/developer")
 
 
 if __name__ == "__main__":
