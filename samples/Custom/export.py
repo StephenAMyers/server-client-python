@@ -14,10 +14,11 @@ import tableauserverclient as TSC
 def main():
     parser = argparse.ArgumentParser(description="Export a view as an image, PDF, or CSV")
     # Common options; please keep those in sync across all samples
-    parser.add_argument("--server", "-s", help="server address", default="https://prod-useast-a.online.tableau.com/")
+    parser.add_argument("--server", "-s", help="server address", default="https://prod-useast-a.online.tableau.com")
     parser.add_argument("--site", "-S", help="site name", default="roofconnect")
-    parser.add_argument("--token-name", "-p", help="name of the personal access token used to sign into the server", default="Tableau REST API")
-    parser.add_argument("--token-value", "-v", help="value of the personal access token used to sign into the server", default="1ob4OvCXI7k7dsFsbLd22W4p2PkkkPIe5biG+75pXVA=")
+    parser.add_argument("--token-name", "-p", help="name of the personal access token used to sign into the server", default="StephenAdminPAT")
+    parser.add_argument("--token-value", "-v", help="value of the personal access token used to sign into the server", default="rICUXGTWTNSpIiOZ3LS57A==:9UXmB6wQbvpVUIsPlYmt1VnxEv5XI1Tb")
+    parser.add_argument("--png", dest="type", action="store_const", const=("populate_image", "ImageRequestOptions", "image", "png"), default="png")
     parser.add_argument(
         "--logging-level",
         "-l",
@@ -26,16 +27,16 @@ def main():
         help="desired logging level (set to error by default)",
     )
     # Options specific to this sample
-    group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument(
-        "--pdf", dest="type", action="store_const", const=("populate_pdf", "PDFRequestOptions", "pdf", "pdf")
-    )
-    group.add_argument(
-        "--png", dest="type", action="store_const", const=("populate_image", "ImageRequestOptions", "image", "png")
-    )
-    group.add_argument(
-        "--csv", dest="type", action="store_const", const=("populate_csv", "CSVRequestOptions", "csv", "csv")
-    )
+    #group = parser.add_mutually_exclusive_group(required=True)
+    #group.add_argument(
+    #    "--pdf", dest="type", action="store_const", const=("populate_pdf", "PDFRequestOptions", "pdf", "pdf")
+    #)
+    #group.add_argument(
+    #    "--png", dest="type", action="store_const", const=("populate_image", "ImageRequestOptions", "image", "png")
+    #)
+    #group.add_argument(
+    #    "--csv", dest="type", action="store_const", const=("populate_csv", "CSVRequestOptions", "csv", "csv")
+    #)
     # other options shown in explore_workbooks: workbook.download, workbook.preview_image
     parser.add_argument(
         "--language", help="Text such as 'Average' will appear in this language. Use values like fr, de, es, en", default="en")
@@ -44,7 +45,7 @@ def main():
 
     parser.add_argument("--file", "-f", help="filename to store the exported data", default="Weekly Game Export")
     #parser.add_argument("--filter", "-vf", metavar="COLUMN:VALUE", help="View filter to apply to the view")
-    parser.add_argument("--resource_id", help="LUID for the view or workbook", default="543379")
+    parser.add_argument("--resource_id", help="LUID for the view or workbook", default="c7879dd9-daba-4aa3-aeeb-35ba8c33f4ca")
 
     args = parser.parse_args()
 
@@ -72,34 +73,34 @@ def main():
         # We encode that information above in the const=(...) parameter to the add_argument function to make
         # the code automatically adapt for the type of export the user is doing.
         # We unroll that information into methods we can call, or objects we can create by using getattr()
-        (populate_func_name, option_factory_name, member_name, extension) = args.type
-        populate = getattr(server.views, populate_func_name)
-        if args.workbook:
-            populate = getattr(server.workbooks, populate_func_name)
-        elif args.custom_view:
-            populate = getattr(server.custom_views, populate_func_name)
-
-        option_factory = getattr(TSC, option_factory_name)
-        options: TSC.PDFRequestOptions = option_factory()
-
-        if args.filter:
-            options = options.vf(*args.filter.split(":"))
-
-        if args.language:
-            options.language = args.language
-
-        if args.file:
-            filename = args.file
-        else:
-            filename = f"out-{options.language}.{extension}"
-
-        populate(item, options)
-        with open(filename, "wb") as f:
-            if member_name == "csv":
-                f.writelines(getattr(item, member_name))
-            else:
-                f.write(getattr(item, member_name))
-        print("saved to " + filename)
+        #(populate_func_name, option_factory_name, member_name, extension) = args.type
+        #populate = getattr(server.views, populate_func_name)
+        #if args.workbook:
+        #    populate = getattr(server.workbooks, populate_func_name)
+        #elif args.custom_view:
+        #    populate = getattr(server.custom_views, populate_func_name)
+#
+        #option_factory = getattr(TSC, option_factory_name)
+        #options: TSC.PDFRequestOptions = option_factory()
+#
+#        if args.filter:
+#            options = options.vf(*args.filter.split(":"))
+#
+#        if args.language:
+#            options.language = args.language
+#
+#        if args.file:
+#           filename = args.file
+#        else:
+#           filename = f"out-{options.language}"
+#
+        #populate(item, options)
+        #with open(filename, "wb") as f:
+        #    if member_name == "csv":
+        #        f.writelines(getattr(item, member_name))
+        #    else:
+        #        f.write(getattr(item, member_name))
+        print("saved to") #print("saved to " + filename)
 
 
 if __name__ == "__main__":
