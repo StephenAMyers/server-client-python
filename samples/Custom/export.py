@@ -18,7 +18,9 @@ def main():
     parser.add_argument("--site", "-S", help="site name", default="roofconnect")
     parser.add_argument("--token-name", "-p", help="name of the personal access token used to sign into the server", default="StephenAdminPAT")
     parser.add_argument("--token-value", "-v", help="value of the personal access token used to sign into the server", default="rICUXGTWTNSpIiOZ3LS57A==:9UXmB6wQbvpVUIsPlYmt1VnxEv5XI1Tb")
-    parser.add_argument("--png", dest="type", action="store_const", const=("populate_image", "ImageRequestOptions", "image", "png"), default="png")
+        # Set PNG as default type without requiring argument
+    parser.add_argument("--type", default=("populate_views", "ImageRequestOptions", "image", "png"))
+    #parser.add_argument("--png", dest="type", action="store_const", const=("populate_image", "ImageRequestOptions", "image", "png"), default="png")
     parser.add_argument(
         "--logging-level",
         "-l",
@@ -27,13 +29,13 @@ def main():
         help="desired logging level (set to error by default)",
     )
     # Options specific to this sample
-    #group = parser.add_mutually_exclusive_group(required=True)
+    group = parser.add_mutually_exclusive_group(required=False)
     #group.add_argument(
     #    "--pdf", dest="type", action="store_const", const=("populate_pdf", "PDFRequestOptions", "pdf", "pdf")
     #)
-    #group.add_argument(
-    #    "--png", dest="type", action="store_const", const=("populate_image", "ImageRequestOptions", "image", "png")
-    #)
+    group.add_argument(
+        "--png", dest="type", action="store_const", const=("populate_image", "ImageRequestOptions", "image", "png"), default="png"
+    )
     #group.add_argument(
     #    "--csv", dest="type", action="store_const", const=("populate_csv", "CSVRequestOptions", "csv", "csv")
     #)
@@ -69,39 +71,31 @@ def main():
             exit(1)
 
         print(f"Item found: {item.name}")
-        # We have a number of different types and functions for each different export type.
-        # We encode that information above in the const=(...) parameter to the add_argument function to make
-        # the code automatically adapt for the type of export the user is doing.
-        # We unroll that information into methods we can call, or objects we can create by using getattr()
-        #(populate_func_name, option_factory_name, member_name, extension) = args.type
-        #populate = getattr(server.views, populate_func_name)
-        #if args.workbook:
-        #    populate = getattr(server.workbooks, populate_func_name)
-        #elif args.custom_view:
-        #    populate = getattr(server.custom_views, populate_func_name)
-#
-        #option_factory = getattr(TSC, option_factory_name)
-        #options: TSC.PDFRequestOptions = option_factory()
-#
-#        if args.filter:
-#            options = options.vf(*args.filter.split(":"))
-#
-#        if args.language:
-#            options.language = args.language
-#
-#        if args.file:
-#           filename = args.file
-#        else:
-#           filename = f"out-{options.language}"
-#
-        #populate(item, options)
-        #with open(filename, "wb") as f:
-        #    if member_name == "csv":
-        #        f.writelines(getattr(item, member_name))
-        #    else:
-        #        f.write(getattr(item, member_name))
-        print("saved to") #print("saved to " + filename)
+    
+    # Unpack export type information
+    (populate_func_name, option_factory_name, member_name, extension) = args.type
+    
+    # Get the correct populate method based on item type
+    if args.workbook:
+        populate = getattr(server.workbooks, populate_func_name)
+    elif args.custom_view:
+        populate = getattr(server.custom_views, populate_func_name)
+    else:
+        populate = getattr(server.views, populate_func_name)
 
+    # Create export options
+    option_factory = getattr(TSC, option_factory_name)
+    options = option_factory()
+    
+    # Export the item
+    file_path = f"{args.file}.{extension}"
+    exported_content = populate(item, options)
+    
+    # Save to file
+    with open(file_path, 'wb') as f:
+        f.write(exported_content)
+    
+    print(f"Export saved to: {file_path}")
 
 if __name__ == "__main__":
     main()
