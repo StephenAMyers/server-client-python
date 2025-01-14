@@ -99,3 +99,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+#TODO resolve error:
+#    f.write(exported_content)
+#    ~~~~~~~^^^^^^^^^^^^^^^^^^
+#TypeError: a bytes-like object is required, not 'NoneType'
