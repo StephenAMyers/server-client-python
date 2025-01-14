@@ -12,6 +12,7 @@ def main():
     # This is the domain for Tableau's Developer Program
     server_url = "https://prod-useast-a.online.tableau.com/"
     server = TSC.Server(server_url)
+    site = "roofconnect"
     print(f"Connected to {server.server_info.baseurl}")
     print(f"Server information: {server.server_info}")
 

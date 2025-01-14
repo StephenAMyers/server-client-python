@@ -16,7 +16,7 @@ def main():
     # Common options; please keep those in sync across all samples
     parser.add_argument("--server", "-s", help="server address", default="https://prod-useast-a.online.tableau.com/")
     parser.add_argument("--site", "-S", help="site name", default="roofconnect")
-    parser.add_argument("--token-name", "-p", help="name of the personal access token used to sign into the server", default="Tableau REST API"))
+    parser.add_argument("--token-name", "-p", help="name of the personal access token used to sign into the server", default="Tableau REST API")
     parser.add_argument("--token-value", "-v", help="value of the personal access token used to sign into the server", default="1ob4OvCXI7k7dsFsbLd22W4p2PkkkPIe5biG+75pXVA=")
     parser.add_argument(
         "--logging-level",
@@ -38,14 +38,13 @@ def main():
     )
     # other options shown in explore_workbooks: workbook.download, workbook.preview_image
     parser.add_argument(
-        "--language", help="Text such as 'Average' will appear in this language. Use values like fr, de, es, en"
-    )
-    parser.add_argument("--workbook", action="store_true")
-    parser.add_argument("--custom_view", action="store_true")
+        "--language", help="Text such as 'Average' will appear in this language. Use values like fr, de, es, en", default="en")
+    parser.add_argument("--workbook", action="store_true", default="Company Weekly Game r2")
+    parser.add_argument("--custom_view", action="store_true", default="WeeklyDayOff_1")
 
-    parser.add_argument("--file", "-f", help="filename to store the exported data")
-    parser.add_argument("--filter", "-vf", metavar="COLUMN:VALUE", help="View filter to apply to the view")
-    parser.add_argument("resource_id", help="LUID for the view or workbook")
+    parser.add_argument("--file", "-f", help="filename to store the exported data", default="Weekly Game Export")
+    #parser.add_argument("--filter", "-vf", metavar="COLUMN:VALUE", help="View filter to apply to the view")
+    parser.add_argument("--resource_id", help="LUID for the view or workbook", default="543379")
 
     args = parser.parse_args()
 
